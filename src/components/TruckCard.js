@@ -64,6 +64,7 @@ const styles = {
         flex: 1,
         fontSize: '12px',
         color: 'grey',
+        textAlign: 'center',
     }
 };
 
