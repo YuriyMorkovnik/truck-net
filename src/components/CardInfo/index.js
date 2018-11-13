@@ -2,39 +2,56 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
+import CardInfoItem from './CardInfoItem';
 
 const styles = {
-
+    root: {
+        height: '168px',
+        display: 'flex',
+        flexDirection: 'column',
+    },
+    content: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'flex-end',
+        flexWrap: 'wrap',
+    }
 };
 
-function RideInfo(props) {
-    const { classes, originName, destinationName, travelTime } = props;
+
+
+function CardInfo(props) {
+    const {
+        classes,
+        originName,
+        destinationName,
+        travelTime,
+        driver,
+        vehicleType = { name: 'Undefined' },
+    } = props;
     return (
-        <Card className={classes.card}>
-            <CardContent>
-                <div className={classes.captionsWrapper}>
-                    <span className={classes.originName}>{originName}</span>
-                    <span className={classes.travelTime}>{`${travelTime}h`}</span>
-                    <span className={classes.destinationName}>{destinationName}</span>
-                </div>
-                <div className={classes.sectionWrapper}>
-                    <div className={classes.fullPoint}/>
-                    <div className={classes.line}/>
-                    <div className={classes.emptyPoint}/>
-                </div>
+        <Card className={classes.root}>
+            <CardContent className={classes.content}>
+                <CardInfoItem title="Driver name" value={driver}/>
+                <CardInfoItem title="Origin" value={originName}/>
+                <CardInfoItem title="Travel time" value={travelTime}/>
+                <CardInfoItem title="Destination" value={destinationName}/>
+                <CardInfoItem title="Vehicle type" value={vehicleType.name}/>
             </CardContent>
         </Card>
     );
 }
 
-RideInfo.propTypes = {
+CardInfo.propTypes = {
     classes: PropTypes.object.isRequired,
+    originName: PropTypes.string.isRequired,
+    destinationName: PropTypes.string.isRequired,
+    travelTime: PropTypes.string.isRequired,
+    driver: PropTypes.string.isRequired,
+    vehicleType: PropTypes.shape({
+        name: PropTypes.string,
+    }),
 };
 
-export default withStyles(styles)(RideInfo);
+export default withStyles(styles)(CardInfo);
