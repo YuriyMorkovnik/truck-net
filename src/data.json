@@ -1,0 +1,82 @@
+{
+  "rides": [
+    {
+      "originName": "Paris",
+      "destinationName": "Lyon",
+      "travelTime": 6,
+      "driver": "Pavel Technoque",
+      "vehicleTypeId": 1
+    },
+    {
+      "originName": "Marseille",
+      "destinationName": "Nantes",
+      "travelTime": 2,
+      "driver": "Marton Coran",
+      "vehicleTypeId": 3
+    },
+    {
+      "originName": "Marseille",
+      "destinationName": "Paris",
+      "travelTime": 10,
+      "driver": "Alex Martinov",
+      "vehicleTypeId": 2
+    },
+    {
+      "originName": "Bordeaux",
+      "destinationName": "Lyon",
+      "driver": "Caren Chahnazarvinho",
+      "travelTime": 1,
+      "vehicleTypeId": 4
+    },
+    {
+      "originName": "Nice",
+      "destinationName": "Toulouse",
+      "travelTime": 12,
+      "driver": "Tibough Cortois",
+      "vehicleTypeId": 2
+    },
+    {
+      "originName": "Nice",
+      "destinationName": "Lille",
+      "travelTime": 6,
+      "driver": "Marlon Canafis",
+      "vehicleTypeId": 1
+    },
+    {
+      "originName": "Reims",
+      "destinationName": "Lyon",
+      "travelTime": 4,
+      "driver": "Cartis Ashrai",
+      "vehicleTypeId": 1
+    },
+    {
+      "originName": "Paris",
+      "destinationName": "Strasbourg",
+      "travelTime": 7,
+      "driver": "Master Cardinho",
+      "vehicleTypeId": 3
+    }
+  ],
+  "vehicleTypes": [
+    {
+      "id": 1, 
+      "name": "Multi-Temparure Refrigerated",
+      "load": 200
+    },
+    {
+      "id": 2,
+      "name": "Open Back",
+      "load": 250
+    },
+    {
+      "id": 3,
+      "name": "With Crane",
+      "load": 400
+    },
+    {
+      "id": 1,
+      "name": "Van",
+      "load": 50
+    }
+  ]
+}
