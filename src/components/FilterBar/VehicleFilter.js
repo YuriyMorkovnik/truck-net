@@ -1,33 +1,44 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
+import FormControl from '@material-ui/core/FormControl';
+import OutlinedInput from '@material-ui/core/OutlinedInput';
 
-const styles = {};
+const styles = {
+    root: {
+        display: 'flex',
+        flexDirection: 'column',
+        marginRight: '16px',
+    },
+    select: {
+        width: '240px',
+    },
+};
 
-function VehicleFilter({ vehicleTypes, selectVehicleType }) {
+function VehicleFilter({ classes, vehicleTypes, selectVehicleType, currentValue }) {
     return (
-        <Fragment>
-            <InputLabel htmlFor="age-simple">Age</InputLabel>
+        <FormControl variant="outlined" className={classes.root}>
+            <InputLabel>Vehicle type</InputLabel>
             <Select
-                value="Ten"
+                className={classes.select}
+                value={currentValue}
                 onChange={selectVehicleType}
-                inputProps={{
-                    name: 'age',
-                    id: 'age-simple',
-                }}
+                input={
+                    <OutlinedInput
+                        labelWidth={88}
+                    />
+                }
+
             >
-                <MenuItem value={null}>None</MenuItem>
+                <MenuItem value={''}>None</MenuItem>
                 {vehicleTypes.map(({id, name}) => (
-                    <MenuItem value={id}>{name}</MenuItem>
+                    <MenuItem key={String(id)} value={id}>{name}</MenuItem>
                 ))}
-                {/*<MenuItem value={10}>Ten</MenuItem>*/}
-                {/*<MenuItem value={20}>Twenty</MenuItem>*/}
-                {/*<MenuItem value={30}>Thirty</MenuItem>*/}
             </Select>
-        </Fragment>
+        </FormControl>
     )
 }
 

@@ -28,7 +28,7 @@ function CardInfo(props) {
         destinationName,
         travelTime,
         driver,
-        vehicleType = { name: 'Undefined' },
+        vehicleType,
     } = props;
     return (
         <Card className={classes.root}>
@@ -50,7 +50,7 @@ CardInfo.propTypes = {
     travelTime: PropTypes.string.isRequired,
     driver: PropTypes.string.isRequired,
     vehicleType: PropTypes.shape({
-        name: PropTypes.string,
+        name: PropTypes.string.isRequired,
     }),
 };
 

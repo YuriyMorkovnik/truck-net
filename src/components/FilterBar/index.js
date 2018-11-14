@@ -1,15 +1,34 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 
+import { selectOrigins } from '../../utils';
+
 import VehicleFilter from './VehicleFilter';
+import OriginFilter from './OriginFilter'
 
-const styles = {};
+const styles = {
+    root: {
+        flexGrow: 1,
+        display: 'flex',
+        flexDirection: 'row',
+        marginBottom: '20px',
+    },
+};
 
-function FilterBar({ data, selectVehicleType }) {
+function FilterBar({ classes, data, filterValues, selectVehicleType, onChangeOriginFilter }) {
     return (
-        <div>
-            <VehicleFilter vehicleTypes={data.vehicleTypes} selectVehicleType={selectVehicleType}/>
+        <div className={classes.root}>
+            <VehicleFilter
+                currentValue={filterValues.vehicleType}
+                vehicleTypes={data.vehicleTypes}
+                selectVehicleType={selectVehicleType}
+            />
+            <OriginFilter
+                origins={selectOrigins(data.rides)}
+                currentValue={filterValues.origin}
+                onChangeOriginFilter={onChangeOriginFilter}
+            />
         </div>
     )
 }
