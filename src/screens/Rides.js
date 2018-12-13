@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import TruckCard from '../components/TruckCard';
+import TruckList from '../components/TruckList';
 import { withStyles } from '@material-ui/core/styles';
 import { parseData, getHours, filterRidesList } from '../utils';
 import CardInfo from '../components/CardInfo';
@@ -71,26 +72,31 @@ class Rides extends Component {
                     filterValues={this.state.filterValues}/>
                 <div className={classes.content}>
                     <div className={classes.columnLeft}>
-                        {this.state.ridesList.map(({
-                            driver,
-                            travelTime,
-                            originName,
-                            destinationName,
-                            vehicleTypeId }) => (
-                            <TruckCard
-                                handleClick={this.handleClick({
-                                    driver,
-                                    travelTime: getHours(travelTime),
-                                    originName,
-                                    destinationName,
-                                    vehicleType: data.vehicleTypes.find(({id}) => id === vehicleTypeId),
-                                })}
-                                key={driver}
-                                originName={originName}
-                                travelTime={travelTime}
-                                destinationName={destinationName}
-                            />
-                        ))}
+                        {/*{this.state.ridesList.map(({*/}
+                            {/*driver,*/}
+                            {/*travelTime,*/}
+                            {/*originName,*/}
+                            {/*destinationName,*/}
+                            {/*vehicleTypeId }) => (*/}
+                            {/*<TruckCard*/}
+                                {/*handleClick={this.handleClick({*/}
+                                    {/*driver,*/}
+                                    {/*travelTime: getHours(travelTime),*/}
+                                    {/*originName,*/}
+                                    {/*destinationName,*/}
+                                    {/*vehicleType: data.vehicleTypes.find(({id}) => id === vehicleTypeId),*/}
+                                {/*})}*/}
+                                {/*key={driver}*/}
+                                {/*originName={originName}*/}
+                                {/*travelTime={travelTime}*/}
+                                {/*destinationName={destinationName}*/}
+                            {/*/>*/}
+                        {/*))}*/}
+                        <TruckList
+                          ridesList={this.state.ridesList}
+                          vehicleTypes={data.vehicleTypes}
+                          handleClick={this.handleClick}
+                        />
                     </div>
                     <div className={classes.columnRight}>
                         {this.state.currentItem && <CardInfo {...this.state.currentItem}/>}

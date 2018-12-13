@@ -5,7 +5,7 @@ import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardContent from '@material-ui/core/CardContent';
 
-import { getHours } from '../utils';
+import { getHours, connectAll, asField } from '../utils';
 
 const green ='#23cf5f';
 const styles = {
@@ -71,22 +71,24 @@ const styles = {
 function TruckCard(props) {
     const { classes, originName, destinationName, travelTime, handleClick } = props;
     return (
-        <Card className={classes.root}>
+        <div >
+          <Card className={classes.root} >
             <CardActionArea onClick={handleClick}>
-                <CardContent className={classes.content}>
-                    <div className={classes.captionsWrapper}>
-                        <span className={classes.originName}>{originName}</span>
-                        <span className={classes.travelTime}>{getHours(travelTime)}</span>
-                        <span className={classes.destinationName}>{destinationName}</span>
-                    </div>
-                    <div className={classes.sectionWrapper}>
-                        <div className={classes.fullPoint}/>
-                        <div className={classes.line}/>
-                        <div className={classes.emptyPoint}/>
-                    </div>
-                </CardContent>
+              <CardContent className={classes.content}>
+                <div className={classes.captionsWrapper}>
+                  <span className={classes.originName}>{originName}</span>
+                  <span className={classes.travelTime}>{getHours(travelTime)}</span>
+                  <span className={classes.destinationName}>{destinationName}</span>
+                </div>
+                <div className={classes.sectionWrapper}>
+                  <div className={classes.fullPoint}/>
+                  <div className={classes.line}/>
+                  <div className={classes.emptyPoint}/>
+                </div>
+              </CardContent>
             </CardActionArea>
-        </Card>
+          </Card>
+        </div>
     );
 }
 
@@ -98,4 +100,10 @@ TruckCard.propTypes = {
     handleClick: PropTypes.func.isRequired,
 };
 
-export default withStyles(styles)(TruckCard);
+
+// const test =  withStyles(styles)(TruckCard);
+// export default asField(test);
+export default connectAll({
+  styles,
+  isField: true,
+})(TruckCard);

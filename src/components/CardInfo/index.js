@@ -1,22 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import * as R from 'ramda';
 import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardInfoItem from './CardInfoItem';
-
 const styles = {
-    root: {
-        height: '168px',
-        display: 'flex',
-        flexDirection: 'column',
-    },
-    content: {
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'flex-end',
-        flexWrap: 'wrap',
-    }
+  root: {
+    height: '168px',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  content: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
+    flexWrap: 'wrap',
+  }
 };
 
 
