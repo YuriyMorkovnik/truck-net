@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import TruckCard from '../components/TruckCard';
+import { formValueSelector } from 'redux-form'
+
 import TruckList from '../components/TruckList';
-import { withStyles } from '@material-ui/core/styles';
-import { parseData, getHours, filterRidesList } from '../utils';
+import { parseData, connectAll, filterRidesList, selectOrigins } from '../utils';
 import CardInfo from '../components/CardInfo';
 import FilterBar from '../components/FilterBar';
 
@@ -29,86 +29,84 @@ const styles = {
 };
 
 class Rides extends Component {
-    state = {
-        ridesList: null,
-        currentItem: null,
-        filterValues: {
-            vehicleType: '' ,
-            origin: '',
-        },
-    };
-    originalRidesList = data.rides;
-    componentDidMount() {
-        this.setState({ ridesList: this.originalRidesList });
+  state = {
+    ridesList: null,
+    currentItem: null,
+    filterValues: {
+        vehicleType: '' ,
+        origin: '',
+    },
+  };
+  originalRidesList = data.rides;
+  componentDidMount() {
+    const { change } = this.props;
+    change('ridesList', this.originalRidesList);
+    change('originList', selectOrigins(this.originalRidesList))
+  }
+
+  componentDidUpdate(prevProps) {
+    const { change, originFilter, vehicleFilter } = this.props;
+    if (originFilter !== prevProps.originFilter || vehicleFilter !== prevProps.vehicleFilter) {
+      change('currentItem', null);
+      change('ridesList', filterRidesList({
+        ridesList: this.originalRidesList,
+        originFilter,
+        vehicleFilter,
+      }))
     }
-    handleClick = (currentItem) => () => {
-        this.setState({ currentItem });
-    };
-    onChangeFilter = nameFilterValue => ({ target: { value } }) => {
-        this.setState(prevState => {
-            const newFilterValues = {
-                ...prevState.filterValues,
-                [nameFilterValue]: value,
-            };
-            return ({
-                ridesList: filterRidesList({
-                    ridesList: this.originalRidesList,
-                    filterValues: newFilterValues,
-                }),
-                currentItem: null,
-                filterValues: newFilterValues
-            })
-        })
-    };
-    render() {
-        const { classes } = this.props;
-        if (!this.state.ridesList) return null;
-        return (
-            <div className={classes.root}>
-                <FilterBar
-                    data={data}
-                    selectVehicleType={this.onChangeFilter('vehicleType')}
-                    onChangeOriginFilter={this.onChangeFilter('origin')}
-                    filterValues={this.state.filterValues}/>
-                <div className={classes.content}>
-                    <div className={classes.columnLeft}>
-                        {/*{this.state.ridesList.map(({*/}
-                            {/*driver,*/}
-                            {/*travelTime,*/}
-                            {/*originName,*/}
-                            {/*destinationName,*/}
-                            {/*vehicleTypeId }) => (*/}
-                            {/*<TruckCard*/}
-                                {/*handleClick={this.handleClick({*/}
-                                    {/*driver,*/}
-                                    {/*travelTime: getHours(travelTime),*/}
-                                    {/*originName,*/}
-                                    {/*destinationName,*/}
-                                    {/*vehicleType: data.vehicleTypes.find(({id}) => id === vehicleTypeId),*/}
-                                {/*})}*/}
-                                {/*key={driver}*/}
-                                {/*originName={originName}*/}
-                                {/*travelTime={travelTime}*/}
-                                {/*destinationName={destinationName}*/}
-                            {/*/>*/}
-                        {/*))}*/}
-                        <TruckList
-                          ridesList={this.state.ridesList}
-                          vehicleTypes={data.vehicleTypes}
-                          handleClick={this.handleClick}
-                        />
-                    </div>
-                    <div className={classes.columnRight}>
-                        {this.state.currentItem && <CardInfo {...this.state.currentItem}/>}
-                    </div>
-                </div>
-            </div>
-        )
-    }
+  }
+
+  render() {
+    const { classes, currentItem, ridesList } = this.props;
+    if (!ridesList) return null;
+    return (
+      <div className={classes.root}>
+        <FilterBar
+          data={data}
+          filterValues={this.state.filterValues}/>
+        <div className={classes.content}>
+          <div className={classes.columnLeft}>
+            <TruckList
+              ridesList={ridesList}
+              vehicleTypes={data.vehicleTypes}
+            />
+          </div>
+          <div className={classes.columnRight}>
+            {currentItem && <CardInfo {...currentItem}/>}
+          </div>
+        </div>
+      </div>
+    )
+  }
 }
 
 Rides.propTypes = {
-    classes: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(Rides);
+const mapStateToProps = state => {
+  const formSelector = formValueSelector('truckList');
+  return {
+    currentItem: formSelector(state, 'currentItem'),
+    ridesList: formSelector(state, 'ridesList'),
+    originFilter: formSelector(state, 'originFilter'),
+    vehicleFilter: formSelector(state, 'vehicleFilter'),
+  }
+};
+
+const formConfig = {
+  form: 'truckList',
+  initialValues: {
+    ridesList: null,
+    originList: null,
+    currentItem: null,
+    originFilter: '',
+    vehicleFilter: '',
+  }
+};
+
+export default connectAll({
+  styles,
+  mapStateToProps,
+  formConfig,
+})(Rides);

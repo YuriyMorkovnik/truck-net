@@ -1,11 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardContent from '@material-ui/core/CardContent';
 
-import { getHours, connectAll, asField } from '../utils';
+import { getHours, connectAll } from '../utils';
 
 const green ='#23cf5f';
 const styles = {
@@ -69,11 +68,26 @@ const styles = {
 };
 
 function TruckCard(props) {
-    const { classes, originName, destinationName, travelTime, handleClick } = props;
+    const {
+      classes,
+      driver,
+      vehicleType,
+      originName,
+      destinationName,
+      travelTime,
+      input: { onChange }
+    } = props;
+    const handleChange = () => onChange({
+      driver,
+      vehicleType,
+      originName,
+      destinationName,
+      travelTime,
+    });
     return (
-        <div >
+        <div onClick={handleChange}>
           <Card className={classes.root} >
-            <CardActionArea onClick={handleClick}>
+            <CardActionArea>
               <CardContent className={classes.content}>
                 <div className={classes.captionsWrapper}>
                   <span className={classes.originName}>{originName}</span>
@@ -97,12 +111,9 @@ TruckCard.propTypes = {
     originName: PropTypes.string.isRequired,
     destinationName: PropTypes.string.isRequired,
     travelTime: PropTypes.number.isRequired,
-    handleClick: PropTypes.func.isRequired,
 };
 
 
-// const test =  withStyles(styles)(TruckCard);
-// export default asField(test);
 export default connectAll({
   styles,
   isField: true,

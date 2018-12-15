@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Field } from 'redux-form';
+import { connect } from 'react-redux';
+import { Field, reduxForm } from 'redux-form';
 import { withStyles } from '@material-ui/core/styles';
 import * as R from 'ramda';
 
@@ -13,13 +14,12 @@ export const selectOrigins = rides => {
     return [...new Set(arrayOfOrigins)];
 };
 
-export const filterRidesList = ({ ridesList, filterValues }) => {
-    const { vehicleType, origin } = filterValues;
-    const filteredByVehicleType = vehicleType !== ''
-        ? ridesList.filter(({ vehicleTypeId }) => vehicleTypeId === vehicleType)
+export const filterRidesList = ({ ridesList, vehicleFilter, originFilter }) => {
+    const filteredByVehicleType = vehicleFilter !== ''
+        ? ridesList.filter(({ vehicleTypeId }) => vehicleTypeId === vehicleFilter)
         : ridesList;
-    return origin !== ''
-        ? filteredByVehicleType.filter(({ originName }) => originName.toLowerCase().includes(origin.toLowerCase()))
+    return originFilter !== ''
+        ? filteredByVehicleType.filter(({ originName }) => originName.toLowerCase().includes(originFilter.toLowerCase()))
         : filteredByVehicleType;
 };
 
@@ -30,10 +30,12 @@ export function asField (Input) {
 }
 
 export const connectAll = config => component => {
-  const { styles, isField } = config;
+  const { styles, isField, mapStateToProps, mapDispatchToProps, formConfig } = config;
   const args =  [
     isField && asField,
     styles && withStyles(styles),
-  ];
+    (mapStateToProps || mapDispatchToProps) && connect(mapStateToProps, mapDispatchToProps),
+    formConfig && reduxForm(formConfig),
+  ].filter(arg => !!arg);
   return R.pipe(...args)(component);
 };
