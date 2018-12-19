@@ -11,16 +11,21 @@ export const getHours = count => `${count} h`;
 
 export const selectOrigins = rides => {
     const arrayOfOrigins = rides.map(item => item.originName);
-    return [...new Set(arrayOfOrigins)];
+    return R.uniq(arrayOfOrigins);
 };
 
-export const filterRidesList = ({ ridesList, vehicleFilter, originFilter }) => {
-    const filteredByVehicleType = vehicleFilter !== ''
-        ? ridesList.filter(({ vehicleTypeId }) => vehicleTypeId === vehicleFilter)
-        : ridesList;
-    return originFilter !== ''
-        ? filteredByVehicleType.filter(({ originName }) => originName.toLowerCase().includes(originFilter.toLowerCase()))
-        : filteredByVehicleType;
+export const selectDestination = rides => {
+  const arrayOfOrigins = rides.map(item => item.destinationName);
+  return R.uniq(arrayOfOrigins);
+};
+
+export const filterRidesList = ({ ridesList, vehicleFilter, originFilter, destinationFilter }) => {
+  return R.pipe(
+    R.when(() => !!vehicleFilter,  R.filter(({ vehicleTypeId }) => vehicleTypeId === vehicleFilter)),
+    //R.filter(({ vehicleTypeId }) => vehicleTypeId === vehicleFilter),
+    R.when(() => !!originFilter, R.filter(({ originName }) => originName.toLowerCase().includes(originFilter.toLowerCase()))),
+    R.when(() => !!destinationFilter, R.filter(({ destinationName }) => destinationName.toLowerCase().includes(destinationFilter.toLowerCase())))
+  )(ridesList);
 };
 
 export function asField (Input) {

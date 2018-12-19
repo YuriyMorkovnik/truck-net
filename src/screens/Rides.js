@@ -3,7 +3,13 @@ import PropTypes from 'prop-types';
 import { formValueSelector } from 'redux-form'
 
 import TruckList from '../components/TruckList';
-import { parseData, connectAll, filterRidesList, selectOrigins } from '../utils';
+import {
+  parseData,
+  connectAll,
+  filterRidesList,
+  selectOrigins,
+  selectDestination,
+} from '../utils';
 import CardInfo from '../components/CardInfo';
 import FilterBar from '../components/FilterBar';
 
@@ -42,16 +48,23 @@ class Rides extends Component {
     const { change } = this.props;
     change('ridesList', this.originalRidesList);
     change('originList', selectOrigins(this.originalRidesList))
+    change('destinationList', selectDestination(this.originalRidesList))
+
   }
 
   componentDidUpdate(prevProps) {
-    const { change, originFilter, vehicleFilter } = this.props;
-    if (originFilter !== prevProps.originFilter || vehicleFilter !== prevProps.vehicleFilter) {
+    const { change, originFilter, vehicleFilter, destinationFilter } = this.props;
+    if (
+      originFilter !== prevProps.originFilter
+      || vehicleFilter !== prevProps.vehicleFilter
+      || destinationFilter !== prevProps.destinationFilter
+    ) {
       change('currentItem', null);
       change('ridesList', filterRidesList({
         ridesList: this.originalRidesList,
         originFilter,
         vehicleFilter,
+        destinationFilter,
       }))
     }
   }
@@ -91,6 +104,7 @@ const mapStateToProps = state => {
     ridesList: formSelector(state, 'ridesList'),
     originFilter: formSelector(state, 'originFilter'),
     vehicleFilter: formSelector(state, 'vehicleFilter'),
+    destinationFilter: formSelector(state, 'destinationFilter'),
   }
 };
 
@@ -99,9 +113,11 @@ const formConfig = {
   initialValues: {
     ridesList: null,
     originList: null,
+    destinationList: null,
     currentItem: null,
     originFilter: '',
     vehicleFilter: '',
+    destinationFilter: '',
   }
 };
 

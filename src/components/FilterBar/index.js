@@ -5,6 +5,7 @@ import { connectAll, selectOrigins } from "../../utils";
 
 import VehicleFilter from './VehicleFilter';
 import OriginFilter from './OriginFilter'
+import DestinationFilter from './DestinationFilter';
 
 const styles = {
   root: {
@@ -12,6 +13,7 @@ const styles = {
     display: 'flex',
     flexDirection: 'row',
     marginBottom: '20px',
+    justifyContent: 'space-between',
   },
 };
 
@@ -26,10 +28,8 @@ function FilterBar({ classes, data, filterValues, selectVehicleType, onChangeOri
       />
       <OriginFilter
         name="originFilter"
-        origins={selectOrigins(data.rides)}
-        currentValue={filterValues.origin}
-        onChangeOriginFilter={onChangeOriginFilter}
       />
+      <DestinationFilter name="destinationFilter" />
     </div>
   )
 }

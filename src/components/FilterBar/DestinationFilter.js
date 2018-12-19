@@ -7,13 +7,13 @@ import { connectAll } from "../../utils";
 import SuggestingTextFilter from './SuggestingTextFilter';
 
 
-class OriginFilter extends Component {
+class DestinationFilter extends Component {
   render() {
     return (
       <SuggestingTextFilter
-        name="originFilter"
-        labelName="Origin"
-        suggestList={this.props.origins}
+        name="destinationFilter"
+        labelName="Destination"
+        suggestList={this.props.destinations}
       />
     )
   }
@@ -23,10 +23,10 @@ class OriginFilter extends Component {
 const mapStateToProps = state => {
   const formSelector = formValueSelector('truckList');
   return {
-    origins: formSelector(state, 'originList'),
+    destinations: formSelector(state, 'destinationList'),
   }
 };
 
 export default connectAll({
   mapStateToProps,
-})(OriginFilter);
+})(DestinationFilter);

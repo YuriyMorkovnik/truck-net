@@ -12,7 +12,6 @@ const styles = {
     root: {
         display: 'flex',
         flexDirection: 'column',
-        marginRight: '16px',
     },
     select: {
         width: '240px',
