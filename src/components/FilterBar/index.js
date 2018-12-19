@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { connectAll, selectOrigins } from "../../utils";
+import { connectAll } from "../../utils";
 
 import VehicleFilter from './VehicleFilter';
 import OriginFilter from './OriginFilter'
@@ -18,7 +18,7 @@ const styles = {
   },
 };
 
-function FilterBar({ classes, data, filterValues, selectVehicleType, onChangeOriginFilter }) {
+function FilterBar({ classes, data, filterValues, selectVehicleType }) {
   return (
     <div className={classes.root}>
       <VehicleFilter

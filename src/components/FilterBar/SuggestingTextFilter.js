@@ -1,7 +1,6 @@
-import React, {Component, Fragment} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Downshift from 'downshift';
-import { formValueSelector } from 'redux-form'
 import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -23,8 +22,6 @@ const styles = {
   },
   suggestList: {
     position: 'absolute',
-    // left: 0,
-    // right: 0,
     zIndex: 10,
   }
 };
@@ -115,6 +112,8 @@ class SuggestingTextFilter extends Component {
 
 SuggestingTextFilter.propTypes = {
   classes: PropTypes.object.isRequired,
+  suggestList: PropTypes.array,
+  labelName: PropTypes.string,
 };
 
 

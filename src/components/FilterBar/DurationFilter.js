@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Chip from '@material-ui/core/Chip';
 import InputLabel from '@material-ui/core/InputLabel';
 

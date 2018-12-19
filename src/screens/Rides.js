@@ -17,21 +17,21 @@ const dataAsJson = require('../data');
 const data = parseData(dataAsJson);
 
 const styles = {
-    root: {
-        padding: '30px',
-    },
-    content: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-    },
-    columnLeft: {
-        width: '50%',
-        marginRight: '20px',
-    },
-    columnRight: {
-        width: '50%',
-    },
+  root: {
+    padding: '30px',
+  },
+  content: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  columnLeft: {
+    width: '50%',
+    marginRight: '20px',
+  },
+  columnRight: {
+    width: '50%',
+  },
 };
 
 class Rides extends Component {

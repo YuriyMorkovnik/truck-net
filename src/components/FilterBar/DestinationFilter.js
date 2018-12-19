@@ -1,4 +1,4 @@
-import React, {Component, Fragment} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { formValueSelector } from 'redux-form'
 
@@ -19,6 +19,9 @@ class DestinationFilter extends Component {
   }
 }
 
+DestinationFilter.propTypes = {
+  destinations: PropTypes.array,
+};
 
 const mapStateToProps = state => {
   const formSelector = formValueSelector('truckList');
