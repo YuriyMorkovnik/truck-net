@@ -6,6 +6,7 @@ import { connectAll, selectOrigins } from "../../utils";
 import VehicleFilter from './VehicleFilter';
 import OriginFilter from './OriginFilter'
 import DestinationFilter from './DestinationFilter';
+import DurationFilter from './DurationFilter';
 
 const styles = {
   root: {
@@ -30,6 +31,7 @@ function FilterBar({ classes, data, filterValues, selectVehicleType, onChangeOri
         name="originFilter"
       />
       <DestinationFilter name="destinationFilter" />
+      <DurationFilter name="durationFilter"/>
     </div>
   )
 }

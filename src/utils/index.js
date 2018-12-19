@@ -19,12 +19,12 @@ export const selectDestination = rides => {
   return R.uniq(arrayOfOrigins);
 };
 
-export const filterRidesList = ({ ridesList, vehicleFilter, originFilter, destinationFilter }) => {
+export const filterRidesList = ({ ridesList, vehicleFilter, originFilter, destinationFilter, durationPredicate }) => {
   return R.pipe(
     R.when(() => !!vehicleFilter,  R.filter(({ vehicleTypeId }) => vehicleTypeId === vehicleFilter)),
-    //R.filter(({ vehicleTypeId }) => vehicleTypeId === vehicleFilter),
     R.when(() => !!originFilter, R.filter(({ originName }) => originName.toLowerCase().includes(originFilter.toLowerCase()))),
-    R.when(() => !!destinationFilter, R.filter(({ destinationName }) => destinationName.toLowerCase().includes(destinationFilter.toLowerCase())))
+    R.when(() => !!destinationFilter, R.filter(({ destinationName }) => destinationName.toLowerCase().includes(destinationFilter.toLowerCase()))),
+    R.when(() => !R.isEmpty(durationPredicate), R.filter(({ travelTime }) => durationPredicate.getPredicate(travelTime)))
   )(ridesList);
 };
 

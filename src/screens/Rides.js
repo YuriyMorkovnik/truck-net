@@ -47,17 +47,24 @@ class Rides extends Component {
   componentDidMount() {
     const { change } = this.props;
     change('ridesList', this.originalRidesList);
-    change('originList', selectOrigins(this.originalRidesList))
+    change('originList', selectOrigins(this.originalRidesList));
     change('destinationList', selectDestination(this.originalRidesList))
 
   }
 
   componentDidUpdate(prevProps) {
-    const { change, originFilter, vehicleFilter, destinationFilter } = this.props;
+    const {
+      change,
+      originFilter,
+      vehicleFilter,
+      destinationFilter,
+      durationPredicate,
+    } = this.props;
     if (
       originFilter !== prevProps.originFilter
       || vehicleFilter !== prevProps.vehicleFilter
       || destinationFilter !== prevProps.destinationFilter
+      || durationPredicate.id !== prevProps.durationPredicate.id
     ) {
       change('currentItem', null);
       change('ridesList', filterRidesList({
@@ -65,6 +72,7 @@ class Rides extends Component {
         originFilter,
         vehicleFilter,
         destinationFilter,
+        durationPredicate
       }))
     }
   }
@@ -105,6 +113,8 @@ const mapStateToProps = state => {
     originFilter: formSelector(state, 'originFilter'),
     vehicleFilter: formSelector(state, 'vehicleFilter'),
     destinationFilter: formSelector(state, 'destinationFilter'),
+    durationPredicate: formSelector(state, 'durationFilter'),
+
   }
 };
 
@@ -118,6 +128,7 @@ const formConfig = {
     originFilter: '',
     vehicleFilter: '',
     destinationFilter: '',
+    durationFilter: {},
   }
 };
 
