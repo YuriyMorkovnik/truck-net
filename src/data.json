@@ -1,6 +1,7 @@
 {
   "rides": [
     {
+      "id": 1,
       "originName": "Paris",
       "destinationName": "Lyon",
       "travelTime": 6,
@@ -8,6 +9,7 @@
       "vehicleTypeId": 1
     },
     {
+      "id": 2,
       "originName": "Marseille",
       "destinationName": "Nantes",
       "travelTime": 2,
@@ -15,6 +17,7 @@
       "vehicleTypeId": 3
     },
     {
+      "id": 3,
       "originName": "Marseille",
       "destinationName": "Paris",
       "travelTime": 10,
@@ -22,6 +25,7 @@
       "vehicleTypeId": 2
     },
     {
+      "id": 4,
       "originName": "Bordeaux",
       "destinationName": "Lyon",
       "driver": "Caren Chahnazarvinho",
@@ -29,6 +33,7 @@
       "vehicleTypeId": 4
     },
     {
+      "id": 5,
       "originName": "Nice",
       "destinationName": "Toulouse",
       "travelTime": 12,
@@ -36,6 +41,7 @@
       "vehicleTypeId": 2
     },
     {
+      "id": 6,
       "originName": "Nice",
       "destinationName": "Lille",
       "travelTime": 6,
@@ -43,6 +49,7 @@
       "vehicleTypeId": 1
     },
     {
+      "id": 7,
       "originName": "Reims",
       "destinationName": "Lyon",
       "travelTime": 4,
@@ -50,6 +57,7 @@
       "vehicleTypeId": 1
     },
     {
+      "id": 8,
       "originName": "Paris",
       "destinationName": "Strasbourg",
       "travelTime": 7,

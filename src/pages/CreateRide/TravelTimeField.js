@@ -2,11 +2,11 @@ import React from 'react';
 
 import { connectAll } from "../../utils";
 
-import DropDownSelector from '../DropDownSelector';
+import DropDownSelector from '../../components/DropDownSelector';
 
 
-function VehicleFilter({
-  vehicleTypes,
+function TravelTimeField({
+  timeOptions,
   input: { onChange, value },
 }) {
   const handleChange = ({ target: { value } }) => {
@@ -14,8 +14,8 @@ function VehicleFilter({
   };
   return (
     <DropDownSelector
-      options={vehicleTypes}
-      label="Vehicle type"
+      options={timeOptions}
+      label="Travel time"
       onChange={handleChange}
       currentValue={value}
     />
@@ -23,6 +23,7 @@ function VehicleFilter({
   )
 }
 
+
 export default connectAll({
   isField: true,
-})(VehicleFilter);
+})(TravelTimeField);

@@ -8,14 +8,12 @@ import MenuItem from '@material-ui/core/MenuItem';
 import { connectAll } from "../../utils";
 
 
+
 const styles = {
   root: {
     display: 'flex',
     flexDirection: 'column',
     position: 'relative',
-  },
-  select: {
-    maxWidth: '240px',
   },
   container: {
     position: 'relative',
@@ -82,11 +80,12 @@ class SuggestingTextFilter extends Component {
             <TextField
               {...getInputProps()}
               className={classes.root}
-              id="outlined-select-currency"
               label={labelName}
               value={inputValue}
               onChange={this.handleInputChange}
+              type="text"
               variant="outlined"
+              fullWidth
             />
             {
               isOpen ? (

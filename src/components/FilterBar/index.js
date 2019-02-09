@@ -18,13 +18,13 @@ const styles = {
   },
 };
 
-function FilterBar({ classes, data, filterValues, selectVehicleType }) {
+function FilterBar({ classes, data, vehicleFilter, vehicleTypes, selectVehicleType }) {
   return (
     <div className={classes.root}>
       <VehicleFilter
         name="vehicleFilter"
-        currentValue={filterValues.vehicleType}
-        vehicleTypes={data.vehicleTypes}
+        currentValue={vehicleFilter}
+        vehicleTypes={vehicleTypes.data}
         selectVehicleType={selectVehicleType}
       />
       <OriginFilter

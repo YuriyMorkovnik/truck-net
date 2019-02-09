@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import { withStyles } from '@material-ui/core/styles';
 import * as R from 'ramda';
+import { withRouter, Link } from 'react-router-dom';
 
 export const parseData = data => JSON.parse(JSON.stringify(data));
 
@@ -33,13 +34,29 @@ export function asField (Input) {
   };
 }
 
+// export const asLink = linkProps => Component => {
+//   return function (props) {
+//     return <Link {...linkProps}><Component {...props} /></Link>
+//   }
+// };
+
 export const connectAll = config => component => {
-  const { styles, isField, mapStateToProps, mapDispatchToProps, formConfig } = config;
+  const {
+    styles,
+    isField,
+    mapStateToProps,
+    mapDispatchToProps,
+    formConfig,
+    withRouterProps,
+    ...rest
+  } = config;
   const args =  [
-    isField && asField,
     styles && withStyles(styles),
     (mapStateToProps || mapDispatchToProps) && connect(mapStateToProps, mapDispatchToProps),
     formConfig && reduxForm(formConfig),
+    withRouterProps && withRouter,
+    isField && asField,
+    ...Object.values(rest),
   ].filter(arg => !!arg);
   return R.pipe(...args)(component);
 };

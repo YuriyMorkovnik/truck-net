@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { formValueSelector } from 'redux-form'
+import { formValueSelector } from 'redux-form';
 
 import TruckList from '../components/TruckList';
 import {
@@ -10,46 +10,21 @@ import {
   selectOrigins,
   selectDestination,
 } from '../utils';
-import CardInfo from '../components/CardInfo';
+import * as ridesActions from '../actions/rides';
+
 import FilterBar from '../components/FilterBar';
+import TwoColumns from '../components/TwoColumns';
 
-const dataAsJson = require('../data');
-const data = parseData(dataAsJson);
+import Page from './Page';
 
-const styles = {
-  root: {
-    padding: '30px',
-  },
-  content: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  columnLeft: {
-    width: '50%',
-    marginRight: '20px',
-  },
-  columnRight: {
-    width: '50%',
-  },
-};
+
 
 class Rides extends Component {
-  state = {
-    ridesList: null,
-    currentItem: null,
-    filterValues: {
-        vehicleType: '' ,
-        origin: '',
-    },
-  };
-  originalRidesList = data.rides;
-  componentDidMount() {
-    const { change } = this.props;
-    change('ridesList', this.originalRidesList);
-    change('originList', selectOrigins(this.originalRidesList));
-    change('destinationList', selectDestination(this.originalRidesList))
 
+  componentDidMount() {
+    const { change, fetchRides, fetchVehicleTypes } = this.props;
+    fetchRides();
+    fetchVehicleTypes();
   }
 
   componentDidUpdate(prevProps) {
@@ -59,7 +34,13 @@ class Rides extends Component {
       vehicleFilter,
       destinationFilter,
       durationPredicate,
+      originalRidesList,
     } = this.props;
+    if (prevProps.originalRidesList.isFetching && !originalRidesList.isFetching) {
+      change('ridesList', originalRidesList.data);
+      change('originList', selectOrigins(originalRidesList.data));
+      change('destinationList', selectDestination(originalRidesList.data))
+    }
     if (
       originFilter !== prevProps.originFilter
       || vehicleFilter !== prevProps.vehicleFilter
@@ -68,7 +49,7 @@ class Rides extends Component {
     ) {
       change('currentItem', null);
       change('ridesList', filterRidesList({
-        ridesList: this.originalRidesList,
+        ridesList: originalRidesList.data,
         originFilter,
         vehicleFilter,
         destinationFilter,
@@ -78,36 +59,33 @@ class Rides extends Component {
   }
 
   render() {
-    const { classes, currentItem, ridesList } = this.props;
+    const { ridesList, vehicleFilter, vehicleTypes } = this.props;
     if (!ridesList) return null;
     return (
-      <div className={classes.root}>
+      <Page>
         <FilterBar
-          data={data}
-          filterValues={this.state.filterValues}/>
-        <div className={classes.content}>
-          <div className={classes.columnLeft}>
+          vehicleTypes={vehicleTypes}
+          vehicleFilter={vehicleFilter}
+        />
+        <TwoColumns
+          leftColumn={
             <TruckList
+              name="currentItem"
               ridesList={ridesList}
-              vehicleTypes={data.vehicleTypes}
+              // vehicleTypes={data.vehicleTypes}
             />
-          </div>
-          <div className={classes.columnRight}>
-            {currentItem && <CardInfo {...currentItem}/>}
-          </div>
-        </div>
-      </div>
+          }
+        />
+      </Page>
     )
   }
 }
 
-Rides.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
-
 const mapStateToProps = state => {
   const formSelector = formValueSelector('truckList');
   return {
+    originalRidesList: state.rides.ridesList,
+    vehicleTypes: state.rides.vehicleTypes,
     currentItem: formSelector(state, 'currentItem'),
     ridesList: formSelector(state, 'ridesList'),
     originFilter: formSelector(state, 'originFilter'),
@@ -116,6 +94,10 @@ const mapStateToProps = state => {
     durationPredicate: formSelector(state, 'durationFilter'),
 
   }
+};
+
+const mapDispatchToProps = {
+  ...ridesActions,
 };
 
 const formConfig = {
@@ -133,7 +115,7 @@ const formConfig = {
 };
 
 export default connectAll({
-  styles,
+  mapDispatchToProps,
   mapStateToProps,
   formConfig,
 })(Rides);
