@@ -47,7 +47,7 @@ class Rides extends Component {
       || destinationFilter !== prevProps.destinationFilter
       || durationPredicate.id !== prevProps.durationPredicate.id
     ) {
-      change('currentItem', null);
+      // change('currentItem', null);
       change('ridesList', filterRidesList({
         ridesList: originalRidesList.data,
         originFilter,
@@ -58,8 +58,30 @@ class Rides extends Component {
     }
   }
 
+  onDropOnFinishedRide = () => {
+    const { activeRide, change } = this.props;
+    change('activeRide', null);
+    change('finishedRide', null);
+    if (!activeRide) return;
+     const finishedRide = { ...activeRide, status: 'finished'};
+
+    change('finishedRidesList', prevState => [...prevState, finishedRide]);
+    change('ridesList', prevState => prevState.filter(item => item._id !== finishedRide._id));
+  };
+
+  onDropActiveRides = () => {
+    const { finishedRide, change } = this.props;
+    change('activeRide', null);
+    change('finishedRide', null);
+    if (!finishedRide) return;
+    const activeRide = { ...finishedRide, status: 'active'};
+
+    change('ridesList', (prevState) => [...prevState, activeRide]);
+    change('finishedRidesList', prevState => prevState.filter(item => item._id !== activeRide._id));
+  };
+
   render() {
-    const { ridesList, vehicleFilter, vehicleTypes } = this.props;
+    const { ridesList, finishedRidesList, vehicleFilter, vehicleTypes } = this.props;
     if (!ridesList) return null;
     return (
       <Page>
@@ -70,8 +92,17 @@ class Rides extends Component {
         <TwoColumns
           leftColumn={
             <TruckList
-              name="currentItem"
+              onDropRides={this.onDropActiveRides}
+              name="activeRide"
               ridesList={ridesList}
+              // vehicleTypes={data.vehicleTypes}
+            />
+          }
+          rightColumn={
+            <TruckList
+              onDropRides={this.onDropOnFinishedRide}
+              name="finishedRide"
+              ridesList={finishedRidesList}
               // vehicleTypes={data.vehicleTypes}
             />
           }
@@ -86,8 +117,10 @@ const mapStateToProps = state => {
   return {
     originalRidesList: state.rides.ridesList,
     vehicleTypes: state.rides.vehicleTypes,
-    currentItem: formSelector(state, 'currentItem'),
+    activeRide: formSelector(state, 'activeRide'),
+    finishedRide: formSelector(state, 'finishedRide'),
     ridesList: formSelector(state, 'ridesList'),
+    finishedRidesList: formSelector(state, 'finishedRidesList'),
     originFilter: formSelector(state, 'originFilter'),
     vehicleFilter: formSelector(state, 'vehicleFilter'),
     destinationFilter: formSelector(state, 'destinationFilter'),
@@ -103,10 +136,12 @@ const mapDispatchToProps = {
 const formConfig = {
   form: 'truckList',
   initialValues: {
-    ridesList: null,
+    ridesList: [],
     originList: null,
+    finishedRidesList: [],
     destinationList: null,
-    currentItem: null,
+    activeRide: null,
+    finishedRide: null,
     originFilter: '',
     vehicleFilter: '',
     destinationFilter: '',

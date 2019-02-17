@@ -78,10 +78,15 @@ function TruckCard(props) {
     originName,
     destinationName,
     travelTime,
+    onDrag,
+    onDragEnd,
+    onDragExit,
     handleChange
   } = props;
+  // console.log('props item', props)
+
   return (
-    <div onClick={handleChange}>
+    <div onClick={handleChange} draggable onDragStart={onDrag} >
       <Card className={classes.root} >
         <CardActionArea>
           <CardContent className={classes.content}>
