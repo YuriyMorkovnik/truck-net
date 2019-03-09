@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import Chip from '@material-ui/core/Chip';
 import InputLabel from '@material-ui/core/InputLabel';
 
@@ -73,4 +73,4 @@ function DurationFilter(props) {
 export default connectAll({
   isField: true,
   styles,
-})(DurationFilter);
+})(memo(DurationFilter));

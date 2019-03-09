@@ -2,27 +2,29 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { formValueSelector } from 'redux-form';
 
-import TruckList from '../components/TruckList';
 import {
-  parseData,
   connectAll,
   filterRidesList,
   selectOrigins,
   selectDestination,
+  selectRideByStatus,
+  RIDE_STATUSES,
 } from '../utils';
 import * as ridesActions from '../actions/rides';
 
 import FilterBar from '../components/FilterBar';
-import TwoColumns from '../components/TwoColumns';
+import Spinner from '../components/Spinner';
+import RidesField from '../components/RidesField';
 
 import Page from './Page';
+
 
 
 
 class Rides extends Component {
 
   componentDidMount() {
-    const { change, fetchRides, fetchVehicleTypes } = this.props;
+    const { fetchRides, fetchVehicleTypes } = this.props;
     fetchRides();
     fetchVehicleTypes();
   }
@@ -37,7 +39,15 @@ class Rides extends Component {
       originalRidesList,
     } = this.props;
     if (prevProps.originalRidesList.isFetching && !originalRidesList.isFetching) {
-      change('ridesList', originalRidesList.data);
+      change('ridesList', selectRideByStatus({
+        rides: originalRidesList.data,
+        rideStatus: RIDE_STATUSES.active ,
+      }));
+      change('finishedRidesList', selectRideByStatus({
+        rides: originalRidesList.data,
+        rideStatus: RIDE_STATUSES.finished,
+      }));
+
       change('originList', selectOrigins(originalRidesList.data));
       change('destinationList', selectDestination(originalRidesList.data))
     }
@@ -47,7 +57,6 @@ class Rides extends Component {
       || destinationFilter !== prevProps.destinationFilter
       || durationPredicate.id !== prevProps.durationPredicate.id
     ) {
-      // change('currentItem', null);
       change('ridesList', filterRidesList({
         ridesList: originalRidesList.data,
         originFilter,
@@ -58,55 +67,80 @@ class Rides extends Component {
     }
   }
 
-  onDropOnFinishedRide = () => {
-    const { activeRide, change } = this.props;
-    change('activeRide', null);
-    change('finishedRide', null);
-    if (!activeRide) return;
-     const finishedRide = { ...activeRide, status: 'finished'};
+  changeRideStatus = (itemForChange, newStatus) => ({ ...itemForChange, status: newStatus });
 
-    change('finishedRidesList', prevState => [...prevState, finishedRide]);
-    change('ridesList', prevState => prevState.filter(item => item._id !== finishedRide._id));
+  updateLists(itemForChange, newStatus) {
+    const { change } = this.props;
+    if (!itemForChange) return;
+
+    const changedRide = this.changeRideStatus(itemForChange, newStatus);
+    this.addToChangedRides(changedRide);
+
+    switch (newStatus) {
+      case RIDE_STATUSES.finished: {
+
+        change('finishedRidesList', prevState => [...prevState, changedRide]);
+        change('ridesList', prevState => prevState.filter(item => item._id !== changedRide._id));
+        return;
+      }
+      case RIDE_STATUSES.active: {
+
+        change('ridesList', (prevState) => [...prevState, changedRide]);
+        change('finishedRidesList', prevState => prevState.filter(item => item._id !== changedRide._id));
+        return;
+      }
+      default: return;
+    }
+  }
+
+  addToChangedRides(ride) {
+    this.props.change('changedRides', prevList => [...prevList, ride]);
+  }
+
+  onDropOnFinishedRide = (e) => {
+    const activeRide = JSON.parse(e.dataTransfer.getData('text'));
+    if(activeRide.status === RIDE_STATUSES.finished) return;
+
+    this.updateLists(activeRide, RIDE_STATUSES.finished);
   };
 
-  onDropActiveRides = () => {
-    const { finishedRide, change } = this.props;
-    change('activeRide', null);
-    change('finishedRide', null);
-    if (!finishedRide) return;
-    const activeRide = { ...finishedRide, status: 'active'};
+  onDropActiveRides = (e) => {
+    const finishedRide = JSON.parse(e.dataTransfer.getData('text'));
+    if(finishedRide.status === RIDE_STATUSES.active) return;
 
-    change('ridesList', (prevState) => [...prevState, activeRide]);
-    change('finishedRidesList', prevState => prevState.filter(item => item._id !== activeRide._id));
+    this.updateLists(finishedRide, RIDE_STATUSES.active);
+  };
+
+  onChangeStatus = () => {
+    const { changeStatus, changedRides, change } = this.props;
+    changeStatus(changedRides.map(({ _id, status }) => ({ _id, status })));
   };
 
   render() {
-    const { ridesList, finishedRidesList, vehicleFilter, vehicleTypes } = this.props;
-    if (!ridesList) return null;
+    const {
+      ridesList,
+      finishedRidesList,
+      vehicleFilter,
+      vehicleTypes,
+      originalRidesList,
+    } = this.props;
+    if (originalRidesList.isFetching) return <Spinner/>;
+    if (!ridesList || !finishedRidesList) return null;
     return (
       <Page>
         <FilterBar
           vehicleTypes={vehicleTypes}
           vehicleFilter={vehicleFilter}
         />
-        <TwoColumns
-          leftColumn={
-            <TruckList
-              onDropRides={this.onDropActiveRides}
-              name="activeRide"
-              ridesList={ridesList}
-              // vehicleTypes={data.vehicleTypes}
-            />
-          }
-          rightColumn={
-            <TruckList
-              onDropRides={this.onDropOnFinishedRide}
-              name="finishedRide"
-              ridesList={finishedRidesList}
-              // vehicleTypes={data.vehicleTypes}
-            />
-          }
+        <RidesField
+          name="changedRides"
+          onClick={this.onChangeStatus}
+          onDropActiveRides={this.onDropActiveRides}
+          onDropOnFinishedRide={this.onDropOnFinishedRide}
+          ridesList={ridesList}
+          finishedRidesList={finishedRidesList}
         />
+
       </Page>
     )
   }
@@ -125,7 +159,7 @@ const mapStateToProps = state => {
     vehicleFilter: formSelector(state, 'vehicleFilter'),
     destinationFilter: formSelector(state, 'destinationFilter'),
     durationPredicate: formSelector(state, 'durationFilter'),
-
+    changedRides: formSelector(state, 'changedRides'),
   }
 };
 
@@ -140,12 +174,13 @@ const formConfig = {
     originList: null,
     finishedRidesList: [],
     destinationList: null,
-    activeRide: null,
-    finishedRide: null,
+    activeRide: [],
+    finishedRide: [],
     originFilter: '',
     vehicleFilter: '',
     destinationFilter: '',
     durationFilter: {},
+    changedRides: [],
   }
 };
 

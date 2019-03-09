@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 
 import { connectAll } from "../../utils";
@@ -43,4 +43,4 @@ FilterBar.propTypes = {
 
 export default connectAll({
   styles,
-})(FilterBar);
+})(memo(FilterBar));

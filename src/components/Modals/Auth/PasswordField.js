@@ -7,7 +7,6 @@ function PasswordField({ input: { onChange } }) {
   return(
     <TextField
       onChange={onChange}
-      autoFocus
       margin="dense"
       // id="name"
       label="Password"

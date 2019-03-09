@@ -34,6 +34,19 @@ export const createRide = payload => async dispatch => {
 };
 
 
+export const changeStatus = payload => async dispatch => {
+  dispatch({ type: 'CHANGE_STATUS_REQUEST' });
+  try {
+    const { data } = await axios.put(
+      'http://localhost:5000/api/rides/changeStatus',
+      payload
+    );
+    dispatch({ type: 'CHANGE_STATUS_REQUEST', payload: data })
+  } catch (error) {
+    dispatch({ type: 'CHANGE_STATUS_ERROR', error });
+  }
+};
+
 export const fetchVehicleTypes = () => async (dispatch) => {
   dispatch({ type: 'FETCH_VEHICLE_TYPES_REQUEST' });
   try {

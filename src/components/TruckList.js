@@ -22,12 +22,17 @@ const styles = {
 };
 
 function TruckList(props) {
-  const { ridesList, input: { onChange, value }, history, classes, onDropRides } = props;
+  const { ridesList, history, classes, onDropRides } = props;
   const [isDropZone, setIsDropZone] = useState(false);
-  useEffect(() => setIsDropZone(Boolean(value)));
+  // useEffect(() => setIsDropZone(Boolean(value)));
+
   const onDragOver = useCallback((e) => e.preventDefault(), [],);
 
-  const onDragStart = useCallback(item => () => onChange(item), []);
+  const onDragStart = useCallback(item => (e) => {
+    e.dataTransfer.setData('text', JSON.stringify(item));
+    // onChange(prevState => [...prevState, item]);
+  }, []);
+
   const handleChange = useCallback(
     ({ id }) => () => {
     history.push(id)
@@ -36,7 +41,7 @@ function TruckList(props) {
     <div
       className={`${classes.root} ${isDropZone ? classes.dropZone : ''}`}
       onDragOver={onDragOver}
-      dropzone="move"
+      // dropzone="move"
       onDrop={onDropRides}
     >
       {ridesList.length !== 0 && ridesList.map((item) => (
@@ -56,4 +61,4 @@ function TruckList(props) {
   )
 }
 
-export default connectAll({ isField: true, withRouter, styles, })(TruckList);
+export default connectAll({ withRouter, styles, })(TruckList);

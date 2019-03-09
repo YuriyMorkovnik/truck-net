@@ -114,6 +114,36 @@ export default (state = initState, action) => {
       }
     }
 
+    case 'CHANGE_STATUS_REQUEST': {
+      return {
+        ...state,
+        changeRide: {
+          ...state.createRide,
+          isFetching: true,
+        }
+      }
+    }
+    case 'CHANGE_STATUS_SUCCEED': {
+      return {
+        ...state,
+        changeRide: {
+          ...state.createRide,
+          data: action.payload,
+          isFetching: false,
+        },
+      }
+    }
+    case 'CHANGE_STATUS_ERROR': {
+      return {
+        ...state,
+        changeRide: {
+          ...state.createRide,
+          isFetching: false,
+          error: action.error,
+        }
+      }
+    }
+
     case 'FETCH_VEHICLE_TYPES_REQUEST': {
       return {
         ...state,

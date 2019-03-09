@@ -1,4 +1,4 @@
-import React, { Fragment, Component } from 'react';
+import React, { Fragment, Component, useEffect, useCallback } from 'react';
 import { formValueSelector } from 'redux-form';
 import Button from '@material-ui/core/Button';
 
@@ -8,31 +8,45 @@ import { connectAll } from '../../utils';
 
 import TwoColumns from '../../components/TwoColumns';
 import TextField from '../../components/TextField';
+import Spinner from '../../components/Spinner';
+
 
 import VehicleField from './VehicleField';
 import TravelTimeField from './TravelTimeField';
 
-
-class CreateRideForm extends Component {
-  componentDidUpdate(prevProps) {
-    const { createRideStruct, history } = this.props;
-    if (
-      prevProps.createRideStruct.isFetching
-        && !createRideStruct.isFetching
-        && !createRideStruct.error
-    ) {
-      history.push(`/rides/${createRideStruct.data._id}`)
-    }
+const styles = {
+  item: {
+    margin: '16px 0px',
   }
-  handleCreateRide = () => {
-    const {
-      createRide,
-      originName,
-      destinationName,
-      driver,
-      vehicleTypeId,
-      travelTime,
-    } = this.props;
+};
+
+function CreateRideForm (props) {
+  const {
+    createRideStruct: { data, isFetching, error },
+    vehicleTypesStruct,
+    history,
+    originName,
+    destinationName,
+    driver,
+    classes,
+    vehicleTypeId,
+    travelTime,
+    fetchVehicleTypes,
+  } = props;
+  useEffect(() => {
+    fetchVehicleTypes();
+  }, []);
+  useEffect(() => {
+    if (
+      data
+      && !isFetching
+      && !error
+    ) {
+      history.push(`/rides/${data._id}`);
+    }
+  }, [isFetching, data, error]);
+  const handleCreateRide = useCallback(() => {
+    const { createRide } = props;
     createRide({
       originName,
       destinationName,
@@ -40,35 +54,41 @@ class CreateRideForm extends Component {
       vehicleTypeId,
       travelTime,
     })
-  };
-  render() {
-    const {
-      createRideStruct: { isFetching },
-    } = this.props;
-    return (
+  }, [originName, destinationName, driver, vehicleTypeId, travelTime]);
 
-      <TwoColumns
-        leftColumn={
-          <Fragment>
-            <TextField name="originName" label="Origin name" />
-            <TextField name="destinationName" label="Destination name"/>
-            <TextField name="driver" label="Driver name"/>
-          </Fragment>
-        }
-        rightColumn={
-          <Fragment>
-            <VehicleField name="vehicleTypeId"/>
-            <TravelTimeField name="travelTime" timeOptions={[{ name: 1, _id: 1 }]} />
-            <Button disabled={isFetching} onClick={this.handleCreateRide} color="primary">
-              Create
-            </Button>
-          </Fragment>
-        }
-      />
+  if (vehicleTypesStruct.isFetching) return <Spinner/>;
+  return (
+    <TwoColumns
+      leftColumn={
+        <Fragment>
+          <TextField name="originName" label="Origin name" className={classes.item}/>
+          <TextField name="destinationName" label="Destination name" className={classes.item}/>
+          <TextField name="driver" label="Driver name" className={classes.item}/>
+        </Fragment>
+      }
+      rightColumn={
+        <Fragment>
+          <VehicleField name="vehicleTypeId" vehicleTypes={vehicleTypesStruct.data} className={classes.item}/>
+          <TravelTimeField name="travelTime" timeOptions={[{ name: 1, _id: 1 }]} className={classes.item}/>
+          <Button disabled={isFetching} onClick={handleCreateRide} color="primary">
+            Create
+          </Button>
+        </Fragment>
+      }
+    />
 
-    )
-  }
+  )
 }
+
+// const CreateRideForm = memo(
+//   _CreateRideForm,
+//   (prevProps, nextProps) => {
+//     return prevProps.createRideStruct.isFetching !== nextProps.createRideStruct.isFetching
+//       // && prevProps.originName !== nextProps.originName
+//       // && prevProps.destinationName !== nextProps.destinationName
+//       // && prevProps.dropZone !== nextProps.driver
+//   }
+// );
 
 const mapStateToProps = state => {
   const formSelector = formValueSelector('createRide');
@@ -79,6 +99,7 @@ const mapStateToProps = state => {
     vehicleTypeId: formSelector(state, 'vehicleTypeId'),
     travelTime: formSelector(state, 'travelTime'),
     createRideStruct: state.rides.createRide,
+    vehicleTypesStruct: state.rides.vehicleTypes,
   }
 };
 
@@ -92,6 +113,7 @@ const formConfig = {
 
 export default connectAll({
   formConfig,
+  styles,
   mapStateToProps,
   mapDispatchToProps,
   withRouterProps: true,

@@ -24,10 +24,11 @@ function DropDownSelector({
   label,
   options,
   onChange,
-  currentValue
+  currentValue,
+  ...props
 }) {
   return (
-    <FormControl variant="outlined" className={classes.root}>
+    <FormControl variant="outlined" className={classes.root} {...props}>
       <InputLabel>{label}</InputLabel>
       <Select
         className={classes.select}

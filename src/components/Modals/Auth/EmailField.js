@@ -7,7 +7,6 @@ function Email({ input: { onChange } }) {
   return(
     <TextField
       onChange={onChange}
-      autoFocus
       margin="dense"
       id="name"
       label="Email Address"

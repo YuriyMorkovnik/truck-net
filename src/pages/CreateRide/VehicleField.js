@@ -1,52 +1,50 @@
-import React, { Component } from 'react';
+import React, { useCallback } from 'react';
 
 import { connectAll } from "../../utils";
-import { fetchVehicleTypes } from "../../actions/rides";
 
 import DropDownSelector from '../../components/DropDownSelector';
-import Spinner from '../../components/Spinner';
 
 
-class VehicleField extends Component {
-  componentDidMount() {
-    this.props.fetchVehicle();
-  }
+function VehicleField (props) {
+  const {
+    vehicleTypes,
+    input: { value, onChange },
+    ...rest
+  } = props;
+  // componentDidMount() {
+  //   this.props.fetchVehicle();
+  // }
 
-  handleChange = ({ target: { value } }) => {
-    this.props.input.onChange(value);
-  };
+  const handleChange = useCallback(({ target: { value } }) => {
+    onChange(value);
+  }, []);
+  // if (!vehicleTypesStruct.data) return null;
+  // if (vehicleTypesStruct.isFetching) return <Spinner/>;
 
-  render() {
-    const {
-      vehicleTypesStruct,
-      input: { value },
-    } = this.props;
-    if (!vehicleTypesStruct.data) return null;
-    if (vehicleTypesStruct.isFetching) return <Spinner/>;
-
-    return (
+  return (
+    <div {...rest}>
       <DropDownSelector
         margin="normal"
-        options={vehicleTypesStruct.data}
+        options={vehicleTypes}
         label="Vehicle type"
-        onChange={this.handleChange}
+        onChange={handleChange}
         currentValue={value}
       />
-    )
-  }
+    </div>
+  )
 
 }
 
-const mapStateToProps = ({ rides: { vehicleTypes } }) => ({
-  vehicleTypesStruct: vehicleTypes,
-});
+// const mapStateToProps = ({ rides: { vehicleTypes } }) => ({
+//   vehicleTypesStruct: vehicleTypes,
+// });
 
-const mapDispatchToProps = {
-  fetchVehicle: fetchVehicleTypes,
-};
+// const mapDispatchToProps = {
+//   fetchVehicle: fetchVehicleTypes,
+// };
 
 export default connectAll({
-  mapDispatchToProps,
-  mapStateToProps,
+  // mapDispatchToProps,
+  // mapStateToProps,
   isField: true,
 })(VehicleField);
