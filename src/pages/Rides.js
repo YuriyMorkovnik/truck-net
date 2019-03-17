@@ -57,8 +57,24 @@ class Rides extends Component {
       || destinationFilter !== prevProps.destinationFilter
       || durationPredicate.id !== prevProps.durationPredicate.id
     ) {
+      // TO DO доделать логику сбрасывания фильтера и облегчить логику экшнов
+      const originalActiveRides = selectRideByStatus({
+        rides: originalRidesList.data,
+        rideStatus: RIDE_STATUSES.active ,
+      });
+      const originalFinishedRides = selectRideByStatus({
+        rides: originalRidesList.data,
+        rideStatus: RIDE_STATUSES.finished,
+      });
       change('ridesList', filterRidesList({
-        ridesList: originalRidesList.data,
+        ridesList: originalActiveRides,
+        originFilter,
+        vehicleFilter,
+        destinationFilter,
+        durationPredicate
+      }));
+      change('finishedRidesList', filterRidesList({
+        ridesList: originalFinishedRides,
         originFilter,
         vehicleFilter,
         destinationFilter,
@@ -94,7 +110,8 @@ class Rides extends Component {
   }
 
   addToChangedRides(ride) {
-    this.props.change('changedRides', prevList => [...prevList, ride]);
+    this.props.change('changedRides', prevList =>
+      [...prevList.filter(item => item._id !== ride._id), ride]);
   }
 
   onDropOnFinishedRide = (e) => {
@@ -112,7 +129,7 @@ class Rides extends Component {
   };
 
   onChangeStatus = () => {
-    const { changeStatus, changedRides, change } = this.props;
+    const { changeStatus, changedRides } = this.props;
     changeStatus(changedRides.map(({ _id, status }) => ({ _id, status })));
   };
 
