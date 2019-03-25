@@ -37,6 +37,7 @@ class Rides extends Component {
       destinationFilter,
       durationPredicate,
       originalRidesList,
+      changeRideStruct,
     } = this.props;
     if (prevProps.originalRidesList.isFetching && !originalRidesList.isFetching) {
       change('ridesList', selectRideByStatus({
@@ -51,6 +52,16 @@ class Rides extends Component {
       change('originList', selectOrigins(originalRidesList.data));
       change('destinationList', selectDestination(originalRidesList.data))
     }
+
+    if (
+      prevProps.changeRideStruct
+      && prevProps.changeRideStruct.isFetching
+      && !changeRideStruct.isFetching
+      && !changeRideStruct.error
+    ) {
+      change('changedRides', []);
+    }
+
     if (
       originFilter !== prevProps.originFilter
       || vehicleFilter !== prevProps.vehicleFilter
@@ -140,6 +151,7 @@ class Rides extends Component {
       vehicleFilter,
       vehicleTypes,
       originalRidesList,
+      changeRideStruct,
     } = this.props;
     if (originalRidesList.isFetching) return <Spinner/>;
     if (!ridesList || !finishedRidesList) return null;
@@ -155,6 +167,7 @@ class Rides extends Component {
           onDropActiveRides={this.onDropActiveRides}
           onDropOnFinishedRide={this.onDropOnFinishedRide}
           ridesList={ridesList}
+          isFetching={changeRideStruct && changeRideStruct.isFetching}
           finishedRidesList={finishedRidesList}
         />
 
@@ -177,6 +190,7 @@ const mapStateToProps = state => {
     destinationFilter: formSelector(state, 'destinationFilter'),
     durationPredicate: formSelector(state, 'durationFilter'),
     changedRides: formSelector(state, 'changedRides'),
+    changeRideStruct: state.rides.changeRide,
   }
 };
 

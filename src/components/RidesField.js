@@ -7,6 +7,7 @@ import Typography from '@material-ui/core/Typography';
 
 import TruckList from '../components/TruckList';
 import TwoColumns from '../components/TwoColumns';
+import Spinner from '../components/Spinner';
 
 import { connectAll } from "../utils";
 
@@ -31,6 +32,7 @@ function RidesField(props) {
     finishedRidesList,
     onDropActiveRides,
     onDropOnFinishedRide,
+    isFetching,
   } = props;
   return (
     <Fragment>
@@ -63,7 +65,7 @@ function RidesField(props) {
         }
       />
       <FabButton title="save" isActive={Boolean(value.length)} onClick={onClick}>
-        <SaveIcon color="secondary" />
+        {isFetching ? <Spinner/> : <SaveIcon color="secondary" />}
       </FabButton>
     </Fragment>
   )

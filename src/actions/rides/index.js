@@ -41,7 +41,7 @@ export const changeStatus = payload => async dispatch => {
       'http://localhost:5000/api/rides/changeStatus',
       payload
     );
-    dispatch({ type: 'CHANGE_STATUS_REQUEST', payload: data })
+    dispatch({ type: 'CHANGE_STATUS_SUCCEED', payload: data })
   } catch (error) {
     dispatch({ type: 'CHANGE_STATUS_ERROR', error });
   }
